@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">SolucionExamen2EvaAlejandro</string>
+    <string name="Contadores">Contadores</string>
+    <string name="Mostrar">Mostrar</string>
+    <string name="Incrementar">Incrementar</string>
+    <string name="Decrementar">Decrementar</string>
+</resources>
