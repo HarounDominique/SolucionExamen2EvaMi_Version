@@ -44,7 +44,8 @@ fun Ej01() {
     //botón decrementar.
     @Composable
     fun Counter() {
-        Row(modifier = Modifier.fillMaxWidth(), Arrangement.Center) {
+        Row(modifier = Modifier.fillMaxWidth(),
+            Arrangement.SpaceEvenly) {
             var counterValue by rememberSaveable { mutableStateOf(0) }
             Button(onClick = { counterValue++ }) {
                 Text(text = stringResource(R.string.Incrementar))
@@ -92,7 +93,8 @@ fun Ej01() {
                 modifier = Modifier
                     .padding(paddingValues = it)
                     .fillMaxSize(),
-                horizontalAlignment = CenterHorizontally
+                horizontalAlignment = CenterHorizontally,
+                verticalArrangement = Arrangement.Center
             ) {
                 for (i in 0 until numCounters) {
                     Counter()
