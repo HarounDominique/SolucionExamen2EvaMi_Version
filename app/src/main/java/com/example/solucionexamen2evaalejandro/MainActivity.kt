@@ -3,7 +3,12 @@ package com.example.solucionexamen2evaalejandro
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.gestures.rememberScrollableState
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Refresh
@@ -42,16 +47,21 @@ fun Ej01() {
     //Función composable (dentro de otra función composable, no sabía que esto era posible) encargada
     //de generar un botón incrementar, seguido de un text con el valor del contador, seguido de un
     //botón decrementar.
+
     @Composable
     fun Counter() {
-        Row(modifier = Modifier.fillMaxWidth(),
-            Arrangement.SpaceEvenly) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            Arrangement.SpaceEvenly
+        ) {
             var counterValue by rememberSaveable { mutableStateOf(0) }
             Button(onClick = { counterValue++ }) {
                 Text(text = stringResource(R.string.Incrementar))
             }
             Text(text = counterValue.toString())
-            Button(onClick = { counterValue-- }) {
+            //la propiedad enabled es la solución de Alejandro; yo había habilitado el efecto del
+            //decremento en el onClick
+            Button(onClick = { counterValue--},  enabled = counterValue>=1) {
                 Text(text = stringResource(R.string.Decrementar))
             }
         }
@@ -84,7 +94,7 @@ fun Ej01() {
             ) {
                 var text by rememberSaveable { mutableStateOf("") }
                 TextField(value = text, onValueChange = { text = it })
-                Button(onClick = { numCounters = text.toInt() }) {
+                Button(onClick = { numCounters = text.toIntOrNull() ?: 0; text = "" }) {
                     Text(text = stringResource(R.string.Mostrar))
                 }
             }
@@ -92,7 +102,10 @@ fun Ej01() {
             Column(
                 modifier = Modifier
                     .padding(paddingValues = it)
-                    .fillMaxSize(),
+                    .fillMaxSize()
+                    //la siguiente línea permite el scroll dentro de la column (solución Alejandro;
+                    //yo intenté usar una LazyColumn sin éxito)
+                    .verticalScroll(rememberScrollState()),
                 horizontalAlignment = CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
