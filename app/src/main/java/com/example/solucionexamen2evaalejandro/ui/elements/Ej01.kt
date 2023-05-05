@@ -31,32 +31,41 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.solucionexamen2evaalejandro.R
 import com.example.solucionexamen2evaalejandro.ui.state.Ej01ViewModel
 
+
+//Función composable (dentro de otra función composable, no sabía que esto era posible) encargada
+//de generar un botón incrementar, seguido de un text con el valor del contador, seguido de un
+//botón decrementar.
+
 @Composable
-fun Ej01() {
-    
-    val Ej01ViewModel : Ej01ViewModel = viewModel()
+fun Counter(
+    number: Int,
+    onClickStartButton: () -> Unit,
+    onClickEndButton: () -> Unit,
+    startButtonText: String = stringResource(R.string.Incrementar),
+    endButtonText: String = stringResource(R.string.Decrementar)
+) {
 
-    //Función composable (dentro de otra función composable, no sabía que esto era posible) encargada
-    //de generar un botón incrementar, seguido de un text con el valor del contador, seguido de un
-    //botón decrementar.
-
-    @Composable
-    fun Counter() {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            Arrangement.SpaceEvenly
-        ) {
-            Button(onClick = { Ej01ViewModel.incrementCounterValue() }) {
-                Text(text = stringResource(R.string.Incrementar))
-            }
-            Text(text = Ej01ViewModel.counterValue.toString())
-            //la propiedad enabled es la solución de Alejandro; yo había habilitado el efecto del
-            //decremento en el onClick
-            Button(onClick = { Ej01ViewModel.decrementCounterValue()},  enabled = Ej01ViewModel.counterValue>=1) {
-                Text(text = stringResource(R.string.Decrementar))
-            }
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        Arrangement.SpaceEvenly
+    ) {
+        Button(onClick = { Ej01ViewModel.incrementCounterValue() }) {
+            Text(text = endButtonText)
+        }
+        Text(text = Ej01ViewModel.counterValue.toString())
+        //la propiedad enabled es la solución de Alejandro; yo había habilitado el efecto del
+        //decremento en el onClick
+        Button(onClick = { Ej01ViewModel.decrementCounterValue()},  enabled = Ej01ViewModel.counterValue>=1) {
+            Text(text = )
         }
     }
+}
+
+
+@Composable
+fun Ej01() {
+
+    val Ej01ViewModel : Ej01ViewModel = viewModel()
 
     Scaffold(topBar = {
         TopAppBar {
@@ -99,9 +108,16 @@ fun Ej01() {
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
-                for (i in 0 until Ej01ViewModel.numCounters) {
-                    Counter()
+                for (it in 0 .. Ej01ViewModel.numCounters) {
+                    Counter(number = Ej01ViewModel.list[it],
+                    onClickEndButton = {Ej01ViewModel.decrementCounterValue()},
+                    onClickStartButton = {Ej01ViewModel.incrementCounterValue()})
+                }/*
+                repeat(Ej01ViewModel.numCounters) {
+                    Counter(Ej01ViewModel, it)
+
                 }
+                */
             }
         }
     }
