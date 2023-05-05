@@ -10,17 +10,13 @@ import kotlinx.coroutines.flow.asStateFlow
 
 class Ej01ViewModel() : ViewModel() {
 
-    //lista de contadores
+    //número de contadores
     private val _list = mutableStateListOf<Int>()
     val list get() = _list
 
     //Valor contenido en cada uno de los contadores
     private val _counterValueList = mutableStateListOf<Int>()
     val counterValueList get() = _counterValueList
-
-    //número de contadores
-    private var _numCounters by mutableStateOf(0)
-    val numCounters get() = _numCounters
 
     private var _textFieldValue by mutableStateOf("")
     val textFieldValue get() = _textFieldValue
@@ -36,9 +32,7 @@ class Ej01ViewModel() : ViewModel() {
 
 
     fun setNumCounters(text: String) {
-
-        _numCounters = text.toIntOrNull() ?: 0; setTextFieldValue("")
-
+        _counterValueList.add(text.toIntOrNull() ?: 0)
     }
 
     fun setTextFieldValue(text: String) {
