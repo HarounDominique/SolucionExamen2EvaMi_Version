@@ -27,12 +27,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.solucionexamen2evaalejandro.R
+import com.example.solucionexamen2evaalejandro.ui.state.Ej01ViewModel
 
 @Composable
 fun Ej01() {
-
-    var numCounters by rememberSaveable { mutableStateOf(0) }
+    
+    val Ej01ViewModel : Ej01ViewModel = viewModel()
 
     //Función composable (dentro de otra función composable, no sabía que esto era posible) encargada
     //de generar un botón incrementar, seguido de un text con el valor del contador, seguido de un
@@ -44,14 +46,13 @@ fun Ej01() {
             modifier = Modifier.fillMaxWidth(),
             Arrangement.SpaceEvenly
         ) {
-            var counterValue by rememberSaveable { mutableStateOf(0) }
-            Button(onClick = { counterValue++ }) {
+            Button(onClick = { Ej01ViewModel.incrementCounterValue() }) {
                 Text(text = stringResource(R.string.Incrementar))
             }
-            Text(text = counterValue.toString())
+            Text(text = Ej01ViewModel.counterValue.toString())
             //la propiedad enabled es la solución de Alejandro; yo había habilitado el efecto del
             //decremento en el onClick
-            Button(onClick = { counterValue--},  enabled = counterValue>=1) {
+            Button(onClick = { Ej01ViewModel.decrementCounterValue()},  enabled = Ej01ViewModel.counterValue>=1) {
                 Text(text = stringResource(R.string.Decrementar))
             }
         }
@@ -66,7 +67,7 @@ fun Ej01() {
                     .weight(0.9F)
                     .padding(start = 16.dp)
             )
-            IconButton(onClick = { numCounters = 0 }) {
+            IconButton(onClick = { Ej01ViewModel.changeNumCounters(0) }) {
                 Icon(
                     imageVector = Icons.Filled.Refresh,
                     contentDescription = "",
@@ -75,16 +76,15 @@ fun Ej01() {
             }
         }
     }) {
-        if (numCounters == 0) {
+        if (Ej01ViewModel.numCounters == 0) {
             Column(
                 modifier = Modifier
                     .padding(paddingValues = it)
                     .fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                var text by rememberSaveable { mutableStateOf("") }
-                TextField(value = text, onValueChange = { text = it })
-                Button(onClick = { numCounters = text.toIntOrNull() ?: 0; text = "" }) {
+                TextField(value = Ej01ViewModel.textFieldValue, onValueChange = { Ej01ViewModel.setTextFieldValue(it) })
+                Button(onClick = { Ej01ViewModel.setNumCounters(Ej01ViewModel.textFieldValue) }) {
                     Text(text = stringResource(R.string.Mostrar))
                 }
             }
@@ -99,7 +99,7 @@ fun Ej01() {
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
-                for (i in 0 until numCounters) {
+                for (i in 0 until Ej01ViewModel.numCounters) {
                     Counter()
                 }
             }
