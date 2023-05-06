@@ -18,10 +18,6 @@ import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -29,7 +25,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.solucionexamen2evaalejandro.R
-import com.example.solucionexamen2evaalejandro.ui.state.Ej01ViewModel
+import com.example.solucionexamen2evaalejandro.ui.state.ej01ViewModel
 
 
 //Función composable (dentro de otra función composable, no sabía que esto era posible) encargada
@@ -38,25 +34,26 @@ import com.example.solucionexamen2evaalejandro.ui.state.Ej01ViewModel
 
 @Composable
 fun Counter(
-    number: Int,
+    index: Int,
     onClickStartButton: () -> Unit,
     onClickEndButton: () -> Unit,
     startButtonText: String = stringResource(R.string.Incrementar),
-    endButtonText: String = stringResource(R.string.Decrementar)
+    endButtonText: String = stringResource(R.string.Decrementar),
+    viewModel: ej01ViewModel
 ) {
-
+    viewModel.counterValueList[index]=0
     Row(
         modifier = Modifier.fillMaxWidth(),
         Arrangement.SpaceEvenly
     ) {
-        Button(onClick = { Ej01ViewModel.incrementCounterValue() }) {
+        Button(onClick = { onClickEndButton}, enabled = viewModel.counterValueList[index]<=0) {
             Text(text = endButtonText)
         }
-        Text(text = Ej01ViewModel.counterValue.toString())
+        Text(text = viewModel.counterValueList[index].toString())
         //la propiedad enabled es la solución de Alejandro; yo había habilitado el efecto del
         //decremento en el onClick
-        Button(onClick = { Ej01ViewModel.decrementCounterValue()},  enabled = Ej01ViewModel.counterValue>=1) {
-            Text(text = )
+        Button(onClick = { onClickStartButton}) {
+            Text(text = startButtonText)
         }
     }
 }
@@ -65,7 +62,7 @@ fun Counter(
 @Composable
 fun Ej01() {
 
-    val Ej01ViewModel : Ej01ViewModel = viewModel()
+    val ej01ViewModel: ej01ViewModel = viewModel()
 
     Scaffold(topBar = {
         TopAppBar {
@@ -76,7 +73,7 @@ fun Ej01() {
                     .weight(0.9F)
                     .padding(start = 16.dp)
             )
-            IconButton(onClick = { Ej01ViewModel.changeNumCounters(0) }) {
+            IconButton(onClick = { ej01ViewModel.setNumberOfCounters("0") }) {
                 Icon(
                     imageVector = Icons.Filled.Refresh,
                     contentDescription = "",
@@ -85,15 +82,17 @@ fun Ej01() {
             }
         }
     }) {
-        if (Ej01ViewModel.numCounters == 0) {
+        if (ej01ViewModel.numberOfCounters == 0) {
             Column(
                 modifier = Modifier
                     .padding(paddingValues = it)
                     .fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                TextField(value = Ej01ViewModel.textFieldValue, onValueChange = { Ej01ViewModel.setTextFieldValue(it) })
-                Button(onClick = { Ej01ViewModel.setNumCounters(Ej01ViewModel.textFieldValue) }) {
+                TextField(
+                    value = ej01ViewModel.textFieldValue,
+                    onValueChange = { ej01ViewModel.setTextFieldValue(it) })
+                Button(onClick = { ej01ViewModel.setNumberOfCounters(ej01ViewModel.textFieldValue) }) {
                     Text(text = stringResource(R.string.Mostrar))
                 }
             }
@@ -108,10 +107,14 @@ fun Ej01() {
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
-                for (it in 0 .. Ej01ViewModel.numCounters) {
-                    Counter(number = Ej01ViewModel.list[it],
-                    onClickEndButton = {Ej01ViewModel.decrementCounterValue()},
-                    onClickStartButton = {Ej01ViewModel.incrementCounterValue()})
+                for (it in 0..ej01ViewModel.numberOfCounters) {
+                    Counter(
+                        //number = ej01ViewModel.counterValueList[it],
+                        index = it,
+                        onClickEndButton = { ej01ViewModel.decrementCounterValue(it) },
+                        onClickStartButton = { ej01ViewModel.incrementCounterValue(it) },
+                        viewModel = ej01ViewModel
+                    )
                 }/*
                 repeat(Ej01ViewModel.numCounters) {
                     Counter(Ej01ViewModel, it)
